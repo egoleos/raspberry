@@ -1,16 +1,15 @@
-#include <stdio.h>  
-#include <stdlib.h>  
-#include <stdint.h>  
+//  read from MaxDetect 1-Wire bus from GPIO on the Raspberry-Pi
+//  Makarenko Alexander
+//  04.06.2013
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <bcm2835.h>
 
-#define MAXTIMINGS 100
-
-//#define DEBUG
-
 #define DHT11 1
 #define DHT22 2
-
 #define debug 1
 #define simple 2
 
@@ -46,9 +45,10 @@ unsigned char main(unsigned char argc, unsigned char **argv) {
 	}
 
 	if (param == debug) printf("Using pin #%d\n", pin);
+
 	MaxDetect1Wire(type, pin, param);
 	return 0;
-} // main
+}
 
 unsigned char  bitDetect(unsigned char pin, unsigned char bitTest, unsigned short maxTime) {
 	unsigned short counter = 0;
@@ -64,8 +64,7 @@ unsigned char MaxDetect1Wire(unsigned char type, unsigned char pin, unsigned cha
 	unsigned char bits[40];
 	unsigned char data[5] = {0,0,0,0,0}; 
 	unsigned char bitid = 0;
-	unsigned char j=0;
-	
+
 	bcm2835_gpio_fsel(pin, BCM2835_GPIO_FSEL_INPT);
 	if (bcm2835_gpio_lev(pin) == 0 && bitDetect(pin, 0, 10000) == 0) return 0;
 
@@ -86,6 +85,7 @@ unsigned char MaxDetect1Wire(unsigned char type, unsigned char pin, unsigned cha
 	}
 
 	if (bitid == 40) {
+		unsigned char j=0;
 		for (int i=0; i<bitid; i++) {
 			data[j/8] <<= 1;
 			if (bits[i] > 40) data[j/8] |= 1;
